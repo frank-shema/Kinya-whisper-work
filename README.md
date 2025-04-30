@@ -1,158 +1,141 @@
-# 🗣️ Kinyarwanda Voice Assistant – "KinyaWhisper"
+🗣️ KinyaWhisper – Kinyarwanda Voice Assistant
+A lightweight, voice-enabled assistant that understands and responds in Kinyarwanda, simulating humanoid robot voice interaction. Built for the Intelligent Robotics course at Rwanda Coding Academy, this project leverages Automatic Speech Recognition (ASR), Natural Language Processing (NLP), and Text-to-Speech (TTS) to create an AI-powered assistant tailored for Kinyarwanda speakers.
 
-A voice-enabled mini assistant that understands **Kinyarwanda** and responds , designed to simulate how intelligent humanoid robots interact with humans in local languages. Built from scratch using ASR (Whisper), NLP, and TTS (pyttsx3), this project showcases the potential of AI for localized voice interaction.
+🎯 Project Overview
+KinyaWhisper is designed to:
 
----
+🎤 Transcribe Kinyarwanda speech using a fine-tuned OpenAI Whisper model.
+🧠 Understand questions via rule-based NLP with fuzzy matching.
+🗣️ Respond in Kinyarwanda using offline TTS (pyttsx3).
 
-## 🎯 Project Summary
+This project demonstrates the potential of localized AI for voice interaction in underrepresented languages like Kinyarwanda.
 
-This project was developed as part of an **Intelligent Robotics** assignment to build a simple voice assistant for Kinyarwanda speakers. It includes:
-
-- 🎤 **Automatic Speech Recognition (ASR)**: Fine-tuned Whisper model on a custom Kinyarwanda dataset.
-- 🧠 **Natural Language Processing (NLP)**: Rule-based question-answer matching with fuzzy logic.
-- 🗣️ **Text-to-Speech (TTS)**: Voice responses using the `pyttsx3` library.
-
----
-
-## 📁 Folder Structure
-
-```
+📁 Project Structure
 .
-├── audio/                   # 44 custom audio samples (Kinyarwanda)
-├── dataset.jsonl           # Metadata: audio path + transcription
-├── kinya-whisper-model/    # Fine-tuned Whisper model output
-├── train.py                # Whisper training script
-├── inference.py            # Batch transcription script
-├── main.py                 # Batch voice assistant (NLP + TTS)
-├── bach_main.py            # CLI: record + respond to live audio
-├── transcriptions.txt      # Output transcriptions
-├── README.md               # Project documentation
-```
+├── audio/ # Custom Kinyarwanda audio samples (44 WAV files)
+├── dataset.jsonl # Metadata for training (audio paths + transcriptions)
+├── kinya-whisper-model/ # Fine-tuned Whisper model
+├── train.py # Script for fine-tuning Whisper
+├── inference.py # Script for batch transcription
+├── main.py # Batch-mode voice assistant (ASR + NLP + TTS)
+├── bach_main.py # CLI for live audio recording and response
+├── transcriptions.txt # Output transcriptions from inference
+├── README.md # Project documentation
 
----
+🚀 Features
 
-## 🚀 How It Works
+ASR: Converts Kinyarwanda speech to text using a fine-tuned Whisper model.
+NLP: Matches transcribed text to predefined answers using fuzzy logic (difflib).
+TTS: Generates spoken responses in Kinyarwanda via pyttsx3.
+Live Recording: Supports real-time voice input via microphone (bach_main.py).
+Batch Processing: Processes multiple audio files for transcription and response (main.py).
 
-1. **ASR**: User speaks or loads audio → Whisper model transcribes it.
-2. **NLP**: Assistant uses exact/fuzzy matching to map transcription to predefined answers.
-3. **TTS**: Assistant speaks the matched answer aloud.
+🛠️ Technologies
 
----
+Python 3.10+
+OpenAI Whisper (fine-tuned whisper-small)
+Transformers (Hugging Face)
+Torchaudio for audio processing
+Pyttsx3 for offline TTS
+Sounddevice for live microphone input
+Difflib for fuzzy text matching
 
-## 🛠️ Technologies Used
+🧠 Model Training
 
-- **Python 3.10+**
-- **OpenAI Whisper (fine-tuned)**
-- **Transformers (Hugging Face)**
-- **Torchaudio**
-- **Pyttsx3** (offline TTS)
-- **Difflib** for fuzzy matching
-- **Sounddevice** for live mic input (CLI mode)
+Dataset: 44 custom Kinyarwanda audio samples created with BearAudioTool.
+Base Model: openai/whisper-small
+Fine-Tuning:
+1st phase: 40 epochs
+2nd phase: 20 additional epochs
+3rd phase: 10 final epochs
 
----
+Performance: Good to generous transcription accuracy across all 44 test samples.
 
-## 🧠 Training Details
+📌 Setup and Installation
+Prerequisites
 
-- Dataset: 44-word Kinyarwanda dataset built using [BearAudioTool](https://www.bearaudiotool.com/)
-- Model: Fine-tuned `openai/whisper-small`
-- Epochs:
-  - 1st run: 40 epochs
-    - ![Inference](./imgs/Capture%20d’écran%20du%202025-04-29%2019-57-02.png) 
-  - 2nd run over pre fine-tuned 40 epochs model : 20 more epochs
-  - 3rd run over pre fine-tuned 40+20 epochs model: 10 final epochs
-- Inference tested on all 44 samples with good to generous transcription accuracy
+Python 3.10+
+Git
+Microphone (for live recording)
 
----
+Steps
 
-## ▶️ How To Run
-
-### 1. Clone and Install Requirements
-
-```bash
+Clone the Repository:
 git clone https://github.com/hrh2/kinyawhisper-voice-assistant.git
 cd kinyawhisper-voice-assistant
-pip install transformers[torch] datasets torchaudio warnings difflib pyttsx3 sounddevice
-```
-### 2. Run Main App (Batch Mode)
 
-```bash
-python main.py
-```
+Install Dependencies:
+pip install transformers[torch] datasets torchaudio pyttsx3 sounddevice
 
-Transcribes all WAV files in `audio/`, matches them to answers, and reads them aloud.
+▶️ How to Run
 
-### 3. Run CLI App (Live Recording)
+1. Batch Mode (Process Audio Files)
+   Run the main script to transcribe all .wav files in the audio/ folder, match them to answers, and speak responses:
+   python main.py
 
-- uncomment line 66 on  the initial run
+2. Live Recording Mode (CLI)
+   Run the CLI script to record live audio, transcribe it, and respond:
 
-```python
-# model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-small") #first time
-```
-- comment the line following 66 on the initial un
+For first-time setup, uncomment line 66 in bach_main.py:# model = WhisperForConditionalGeneration.from_pretrained("openai/whisper-small") #first time
 
-```python
-model = WhisperForConditionalGeneration.from_pretrained("./kinya-whisper-model")
-```
+Comment out the fine-tuned model line:model = WhisperForConditionalGeneration.from_pretrained("./kinya-whisper-model")
 
-```bash
-python bach_main.py
-```
+Run:python bach_main.py
 
-Records a live voice input from your mic, transcribes it, matches it, and responds via voice.
+3. Run Inference Only
+   Transcribe audio files without NLP or TTS:
+   python inference.py
 
-### 4. Run ASR Inference Script Only
+4. Train the Model (Optional)
+   Fine-tune the Whisper model using the provided dataset:
+   python train.py
 
-```bash
-python inference.py
-```
+🗣️ Sample Commands and Responses
 
-Generates text transcriptions only (no NLP or TTS).
+Kinyarwanda Question
+Response
 
-### 5. Train Your Own Model (Optional)
+amakuru yawe
+Ni meza, urakoze! nkufashe iki?
 
-```bash
-python train.py
-```
+witwa nde
+Nitwa Mudasa AI.
 
-Fine-tunes Whisper using `dataset.jsonl` and saves to `./kinya-whisper-model/`.
+uzi ikinyarwanda
+Nkunda gufasha abantu mu rurimi rwacu.
 
----
+wiriwe
+Wiriwe neza.
 
-## 📌 Sample QA Dictionary
+umworozi ni iki
+Umworozi ni umuntu utunga amatungo.
 
-| Question (Kinyarwanda)        | Assistant Response                         |
-|------------------------------|--------------------------------------------|
-| `amakuru yawe`               | `Ni meza, urakoze! nkufashe iki?`          |
-| `witwa nde`                  | `Nitwa Mudasa AI.`                         |
-| `uzi ikinyarwanda`           | `Nkunda gufasha abantu mu rurimi rwacu.`  |
-| `wiriwe`                     | `wiriwe neza`                              |
-| `umworozi ni iki`            | `umworozi ni umuntu utunga amatungo`      |
+Fuzzy matching ensures robustness for partial or mispronounced inputs.
 
-Fuzzy and partial matches are supported to improve recognition.
+🧪 Testing with Audio
 
----
+Batch Mode: Place .wav files in the audio/ folder (e.g., muraho.wav, inzovu.wav).
+Live Mode: Speak directly into the microphone when prompted by bach_main.py.
+Example commands: muraho, umwana, vuga gahoro, kwandika.
 
-## 🧪 Example Audio Commands
+🎓 Academic Context
 
-Upload your own `.wav` files into the `audio/` folder or record with `bach_main.py`. Examples:
-- `muraho`
-- `inzovu`
-- `umwana`
-- `vuga gahoro`
-- `kwandika`
+Course: Intelligent Robotics
+Institution: Rwanda Coding Academy
+Instructor: Gabriel Baziramwabo
+Assignment: Term 3, Assignment 1 (Due April 30, 2025)
 
----
+👤 Author
+HIRWA Rukundo Hope
 
-## 🎓 Academic Info
-
-- **Course**: Intelligent Robotics  
-- **Instructor**: [Gabriel Baziramwabo ](https://www.researchgate.net/profile/Gabriel-Baziramwabo) 
-- **School**: [Rwanda Coding Academy](https://rca.ac.rw/)  
-
----
-
-## 👤 Author
-
-**HIRWA Rukundo Hope**  
 Email: gakundohope5@gmail.com  
-GitHub: [@hrh2](https://github.com/hrh2)
+GitHub: @hrh2
+
+📝 License
+This project is licensed under the MIT License. See the LICENSE file for details.
+
+🙌 Acknowledgments
+
+OpenAI for the Whisper model
+Hugging Face for Transformers and datasets
+Rwanda Coding Academy for the opportunity to explore AI in local languages
